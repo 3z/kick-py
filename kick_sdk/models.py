@@ -1,4 +1,4 @@
-"""Data models for Kick API responses. Built from real API responses."""
+"""Data models for Kick API responses — built from real API responses."""
 
 from dataclasses import dataclass, field
 from typing import Optional, List
@@ -6,6 +6,8 @@ from typing import Optional, List
 
 @dataclass
 class Category:
+    """Top-level Kick category."""
+
     id: int
     name: str
     slug: str
@@ -13,12 +15,16 @@ class Category:
 
     @classmethod
     def from_dict(cls, d: dict) -> "Category":
-        return cls(id=d.get("id", 0), name=d.get("name", ""),
-                   slug=d.get("slug", ""), icon=d.get("icon", ""))
+        """Create a Category from an API response dict."""
+        return cls(
+            id=d.get("id", 0), name=d.get("name", ""), slug=d.get("slug", ""), icon=d.get("icon", "")
+        )
 
 
 @dataclass
 class Subcategory:
+    """Kick subcategory with viewer count, banner, and tags."""
+
     id: int
     category_id: int
     name: str
@@ -31,6 +37,7 @@ class Subcategory:
 
     @classmethod
     def from_dict(cls, d: dict) -> "Subcategory":
+        """Create a Subcategory from an API response dict."""
         banner = d.get("banner", {})
         cat = d.get("category", {})
         return cls(
@@ -48,6 +55,8 @@ class Subcategory:
 
 @dataclass
 class StreamerChannel:
+    """A user's associated streamer channel."""
+
     id: int
     user_id: int
     slug: str
@@ -62,6 +71,7 @@ class StreamerChannel:
 
     @classmethod
     def from_dict(cls, d: dict) -> "StreamerChannel":
+        """Create a StreamerChannel from an API response dict."""
         return cls(
             id=d.get("id", 0),
             user_id=d.get("user_id", 0),
@@ -79,6 +89,8 @@ class StreamerChannel:
 
 @dataclass
 class User:
+    """A Kick user profile."""
+
     id: int
     username: str
     email: Optional[str] = None
@@ -103,6 +115,7 @@ class User:
 
     @classmethod
     def from_dict(cls, d: dict) -> "User":
+        """Create a User from an API response dict."""
         ch = d.get("streamer_channel", {})
         return cls(
             id=d.get("id", 0),
@@ -131,6 +144,8 @@ class User:
 
 @dataclass
 class Channel:
+    """A Kick channel."""
+
     id: int
     user_id: int
     slug: str
@@ -144,6 +159,7 @@ class Channel:
 
     @classmethod
     def from_dict(cls, d: dict) -> "Channel":
+        """Create a Channel from an API response dict."""
         return cls(
             id=d.get("id", 0),
             user_id=d.get("user_id", 0),
@@ -160,6 +176,8 @@ class Channel:
 
 @dataclass
 class Clip:
+    """A Kick clip."""
+
     id: str
     title: str
     channel_id: int
@@ -175,6 +193,7 @@ class Clip:
 
     @classmethod
     def from_dict(cls, d: dict) -> "Clip":
+        """Create a Clip from an API response dict."""
         return cls(
             id=d.get("id", ""),
             title=d.get("title", ""),
@@ -193,12 +212,15 @@ class Clip:
 
 @dataclass
 class ModerationRule:
+    """A chat moderation rule class."""
+
     rule_class: str
     level: int
     levels: List[int] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, d: dict) -> "ModerationRule":
+        """Create a ModerationRule from an API response dict."""
         return cls(
             rule_class=d.get("class", ""),
             level=d.get("level", 0),
@@ -208,32 +230,41 @@ class ModerationRule:
 
 @dataclass
 class GoalEmote:
+    """A channel goal emote."""
+
     id: str
     name: str
     path: str
 
     @classmethod
     def from_dict(cls, d: dict) -> "GoalEmote":
+        """Create a GoalEmote from an API response dict."""
         return cls(id=d.get("id", ""), name=d.get("name", ""), path=d.get("path", ""))
 
 
 @dataclass
 class TrendingTag:
+    """A trending stream tag."""
+
     display_label: str
 
     @classmethod
     def from_dict(cls, d: dict) -> "TrendingTag":
+        """Create a TrendingTag from an API response dict."""
         return cls(display_label=d.get("display_label", ""))
 
 
 @dataclass
 class AuthTokens:
+    """Authentication tokens returned after login."""
+
     access_token: str
     token_type: str = "Bearer"
     expires_in: int = 0
 
     @classmethod
     def from_dict(cls, d: dict) -> "AuthTokens":
+        """Create AuthTokens from an API response dict."""
         return cls(
             access_token=d.get("access_token", d.get("token", "")),
             token_type=d.get("token_type", "Bearer"),
@@ -243,11 +274,14 @@ class AuthTokens:
 
 @dataclass
 class FollowResult:
+    """Result of a follow/unfollow operation."""
+
     success: bool
     message: str = ""
 
     @classmethod
     def from_dict(cls, d: dict) -> "FollowResult":
+        """Create a FollowResult from an API response dict."""
         return cls(
             success=d.get("status", d.get("unfollowed", False)),
             message=d.get("message", ""),
@@ -256,6 +290,8 @@ class FollowResult:
 
 @dataclass
 class ChatMessage:
+    """A chat message."""
+
     id: str = ""
     channel_id: int = 0
     user_id: int = 0
@@ -265,6 +301,7 @@ class ChatMessage:
 
     @classmethod
     def from_dict(cls, d: dict) -> "ChatMessage":
+        """Create a ChatMessage from an API response dict."""
         sender = d.get("sender", d.get("user", {}))
         return cls(
             id=str(d.get("id", "")),

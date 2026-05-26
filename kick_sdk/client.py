@@ -1,20 +1,4 @@
-"""
-Kick.com Python SDK - main client.
-
-Usage:
-    from kick_sdk import KickClient
-
-    # Public
-    client = KickClient()
-    cats = client.livestreams.get_categories()
-    channel = client.channels.get("xqc")
-
-    # Authenticated
-    client = KickClient(access_token="USER_ID|TOKEN_PREFIX...")
-    me = client.users.get_me()
-    client.channels.follow(668)
-    client.chat.send_message(668, "hello")
-"""
+"""Kick.com Python SDK — main client class."""
 
 from typing import Optional
 from .session import KickSession
@@ -26,7 +10,19 @@ from .api.users import UserAPI
 
 
 class KickClient:
-    """Main Kick API client."""
+    """Main entry point for the Kick.com API.
+
+    Usage:
+        # Public (no auth)
+        client = KickClient()
+        cats = client.livestreams.get_categories()
+        channel = client.channels.get("xqc")
+
+        # Authenticated
+        client = KickClient(access_token="USER_ID|TOKEN")
+        me = client.users.get_me()
+        client.channels.follow(668)
+    """
 
     def __init__(
         self,
@@ -35,9 +31,15 @@ class KickClient:
         user_agent: str = None,
         access_token: str = None,
     ):
-        self._session = KickSession(
-            device_info=device_info, user_agent=user_agent
-        )
+        """Create a new Kick API client.
+
+        Args:
+            proxy: HTTP/HTTPS proxy URL.
+            device_info: Dict of device properties for Kasada fingerprinting.
+            user_agent: Browser User-Agent string.
+            access_token: Kick access token for authenticated requests.
+        """
+        self._session = KickSession(device_info=device_info, user_agent=user_agent)
         if proxy:
             self._session._session.proxies = {"http": proxy, "https": proxy}
         if access_token:
@@ -49,83 +51,93 @@ class KickClient:
         self._chat = ChatAPI(self._session)
         self._users = UserAPI(self._session)
 
-    # ---- Properties ----
+    # -- Properties -------------------------------------------------------
 
     @property
     def auth(self) -> KickAuth:
+        """Authentication handler (Google OAuth, token management)."""
         return self._auth
 
     @property
     def channels(self) -> ChannelAPI:
+        """Channel operations: get, follow, unfollow, feed."""
         return self._channels
 
     @property
     def livestreams(self) -> LivestreamAPI:
+        """Content discovery: categories, clips, trending tags."""
         return self._livestreams
 
     @property
     def chat(self) -> ChatAPI:
+        """Chat operations: messages, bans, moderation rules."""
         return self._chat
 
     @property
     def users(self) -> UserAPI:
+        """User operations: profile, updates, silenced users."""
         return self._users
 
     @property
     def access_token(self) -> Optional[str]:
+        """The current access token, or None if not authenticated."""
         return self._session._access_token
 
     @property
     def is_authenticated(self) -> bool:
+        """True if an access token is set."""
         return self._session._access_token is not None
 
     @property
     def cookies(self) -> dict:
+        """Session cookies for debugging."""
         return self._session.cookies
 
-    # ---- Auth ----
+    # -- Auth -------------------------------------------------------------
 
     def login(self, access_token: str):
-        """Set an existing access token."""
+        """Set an existing access token for authenticated requests."""
         self._session.set_access_token(access_token)
 
     def login_with_google(self, google_id_token: str) -> dict:
-        """Login with Google ID token (OAuth -> Firebase -> Kick)."""
+        """Login with a Google ID token (OAuth → Firebase → Kick)."""
         return self._auth.login_with_google_id_token(google_id_token)
 
     def login_with_firebase(self, firebase_id_token: str) -> dict:
-        """Login with Firebase ID token."""
+        """Login with a Firebase ID token."""
         return self._auth.login_with_firebase_token(firebase_id_token)
 
-    # ---- Utility API ----
+    # -- Utility API ------------------------------------------------------
 
     def get_resource_urls(self) -> dict:
-        """Get CDN and asset URLs."""
+        """Get CDN and asset URLs used by Kick."""
         return self._session.get("/api/v1/resource-urls")
 
     def get_presigned_post(self) -> dict:
-        """Get S3 presigned upload URL."""
+        """Get an S3 presigned upload URL for file uploads."""
         return self._session.get("/api/v2/presigned-post")
 
     def get_goal_emotes(self) -> list:
-        """Get channel goal emotes."""
+        """Get available channel goal emotes."""
         return self._session.get("/api/v2/channel-goal-emotes")
 
     def get_subscription_plan(self) -> dict:
-        """Get subscription plans."""
+        """Get subscription plan information."""
         return self._session.get("/api/v1/subscriptions/plan")
 
     def get_payment_history(self) -> dict:
         """Get payment history."""
         return self._session.get("/api/v1/subscriptions/payments-history")
 
-    # ---- Session ----
+    # -- Session ----------------------------------------------------------
 
     @property
     def session(self) -> KickSession:
+        """The underlying KickSession for low-level API access."""
         return self._session
 
     def close(self):
+        """Close the underlying HTTP session."""
         self._session.close()
 
     def __enter__(self):
