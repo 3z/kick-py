@@ -10,7 +10,7 @@ Usage:
     channel = client.channels.get("xqc")
 
     # Authenticated
-    client = KickClient(access_token="367971611|WVud...")
+    client = KickClient(access_token="USER_ID|TOKEN_PREFIX...")
     me = client.users.get_me()
     client.channels.follow(668)
     client.chat.send_message(668, "hello")

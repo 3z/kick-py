@@ -68,7 +68,7 @@ print(f"  Playback: {channel.playback_url}")
 ```python
 from kick_sdk import KickClient
 
-TOKEN = "367971611|WVud8x3i2lMvN39c5yDJLA6siGu0hiDlhM46rFft"
+TOKEN = "YOUR_USER_ID|YOUR_ACCESS_TOKEN"
 client = KickClient(access_token=TOKEN)
 
 # User profile
@@ -246,7 +246,7 @@ class FollowResult:
 {user_id}|{token_string}
 ```
 
-Example: `367971611|WVud8x3i2lMvN39c5yDJLA6siGu0hiDlhM46rFft`
+Example: `YOUR_USER_ID|YOUR_ACCESS_TOKEN`
 
 The token is a static Bearer token that persists across sessions. Store and reuse it.
 
