@@ -1,14 +1,14 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://kick.com/img/kick-logo.svg">
-    <img src="https://kick.com/img/kick-logo.svg" alt="Kick SDK" width="280">
+    <img src="https://kick.com/img/kick-logo.svg" width="300" alt="Kick">
   </picture>
 </p>
 
-<h1 align="center">Kick Python SDK</h1>
+<h1 align="center">Python SDK</h1>
 
 <p align="center">
-  <strong>Programmatic access to Kick.com — channels, livestreams, clips, chat, and more.</strong>
+  <strong>A Python client for Kick.com — channels, livestreams, clips, chat, and more.</strong>
 </p>
 
 <p align="center">
@@ -19,6 +19,28 @@
 </p>
 
 ---
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Examples](#examples)
+  - [Browsing Content](#browsing-content)
+  - [Profile & Social](#profile--social)
+  - [Following](#following)
+  - [Chat & Moderation](#chat--moderation)
+  - [Subscriptions & Payments](#subscriptions--payments)
+  - [File Uploads](#file-uploads-s3-presigned)
+  - [Real-time Chat (WebSocket)](#real-time-chat-websocket)
+  - [Email Signup Flow](#email-signup-flow)
+  - [Kasada Solver (Standalone)](#kasada-solver-standalone)
+- [API Coverage](#api-coverage)
+- [Data Models](#data-models)
+- [Architecture](#architecture)
+- [Security Layers](#security-layers)
+- [Tests](#tests)
+- [License](#license)
 
 ## Features
 
@@ -35,8 +57,8 @@
 
 ```bash
 pip install tls_client websocket-client requests
-git clone https://github.com/3z/kick-python-sdk.git
-cd kick-python-sdk
+git clone https://github.com/3z/kick-py.git
+cd kick-py
 ```
 
 ## Quick Start
